@@ -1,0 +1,17 @@
+{
+  "name": "twoApp",
+  "version": "1.0.0",
+  "description": "two microservice",
+  "author": "Edgar Rodriguez <edgarj.rodriguezg@gmail.com>",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.13.3",
+    "portfinder": "^1.0.10",
+    "pug": "^2.0.0-beta6",
+    "rabbit.js": "^0.4.4"
+  }
+}
