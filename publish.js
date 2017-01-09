@@ -5,7 +5,7 @@ var rabbit = require('rabbit.js')
 
 var ctx;
 
-var start = () => {
+function start() {
   ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
 
 
@@ -25,9 +25,10 @@ var start = () => {
       var secs = elapsed[0] + elapsed[1] * Math.pow(10, -9);
       var sent = j - lastj, recv = i - lasti;
       lasti = i; lastj = j;
-      console.log('Sent: %d at %d msg/s, Recv: %d at %d msg/s',
+      console.log('Sent: %d at %d msg/s, Recv: %d at %d msg/s on port %d',
         sent, (sent / secs).toFixed(1),
-        recv, (recv / secs).toFixed(1));
+        recv, (recv / secs).toFixed(1),
+        global.port);
     }
 
     function finish() {
@@ -75,6 +76,60 @@ var start = () => {
   ctx.on('error', console.warn);
 }
 
+var subSocket = null;
+
+var counter = 0;
+
+function sub() {
+  ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
+
+  ctx.on('ready', function () {
+    subSocket = ctx.socket('SUB');
+
+    subSocket.connect('easyamqp', function () {
+      console.log("Starting consumer...");
+
+      subSocket.on('data', recv);
+    });
+  });
+  ctx.on('error', console.warn);
+}
+
+function recv(data) {
+  counter++;
+  console.log("data: %s, counter: %s", data, counter)
+}
+
+function stop() {
+  running = false;
+  var since = process.hrtime(now);
+  report();
+  ctx.close();
+}
+
+var pubSocket = null;
+
+function pub() {
+  ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
+
+
+  ctx.on('ready', function () {
+    pubSocket = ctx.socket('PUB');
+    console.log("Starting publisher...");
+    pubSocket.connect('easyamqp');
+  });
+  ctx.on('error', console.warn);
+}
+
+function send(message) {
+  console.log(message);
+  writable = pubSocket.write(message)
+}
+
 module.exports = {
-  start: start
+  start: start,
+  sub: sub,
+  pub: pub,
+  stop: stop,
+  send: send
 }
