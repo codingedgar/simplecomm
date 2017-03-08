@@ -1,12 +1,16 @@
-# simplecomm
-# microservices communication with Rabbit MQ 
+# Microservices communication with Rabbit MQ 
 
-Install rabbit with "docker run -d --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5671:5671 -p 5672:5672 rabbitmq:3-management"
+Install rabbit with 
+
+```
+docker run -d --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5671:5671 -p 5672:5672 rabbitmq:3-management
+```
 
 ## Pub Sub implemtation:
 
 ### Publisher
 publish connect to channel 
+
 ```
 POST / HTTP/1.1
 Host: localhost:8001
@@ -36,7 +40,7 @@ Postman-Token: c9fbc0b7-4ede-8229-6e87-a0fe28f9c7a7
 }
 ```
 
-### subscriber
+### Subscriber
 
 Listen idle
 ```
