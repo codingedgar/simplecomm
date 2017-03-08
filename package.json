@@ -5,7 +5,7 @@
   "author": "Edgar Rodriguez <edgarj.rodriguezg@gmail.com>",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "./node_modules/nodemon/bin/nodemon.js app.js"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
@@ -13,5 +13,8 @@
     "portfinder": "^1.0.10",
     "pug": "^2.0.0-beta6",
     "rabbit.js": "^0.4.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
   }
 }
