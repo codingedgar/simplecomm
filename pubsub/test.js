@@ -4,10 +4,15 @@
 var rabbit = require('rabbit.js')
 
 var ctx;
+const config = {
+  context: 'amqp://localhost:5672',
+  channel: "pubsubchannel"
+}
 
 function start() {
-  ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
+  ctx = rabbit.createContext(config.context)
 
+  console.log("starting")
 
   ctx.on('ready', function () {
 
@@ -76,30 +81,6 @@ function start() {
   ctx.on('error', console.warn);
 }
 
-var subSocket = null;
-
-var counter = 0;
-
-function sub() {
-  ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
-
-  ctx.on('ready', function () {
-    subSocket = ctx.socket('SUB');
-
-    subSocket.connect('easyamqp', function () {
-      console.log("Starting consumer...");
-
-      subSocket.on('data', recv);
-    });
-  });
-  ctx.on('error', console.warn);
-}
-
-function recv(data) {
-  counter++;
-  console.log("data: %s, counter: %s", data, counter)
-}
-
 function stop() {
   running = false;
   var since = process.hrtime(now);
@@ -107,29 +88,7 @@ function stop() {
   ctx.close();
 }
 
-var pubSocket = null;
-
-function pub() {
-  ctx = rabbit.createContext('amqp://developer:developer@localhost:5672')
-
-
-  ctx.on('ready', function () {
-    pubSocket = ctx.socket('PUB');
-    console.log("Starting publisher...");
-    pubSocket.connect('easyamqp');
-  });
-  ctx.on('error', console.warn);
-}
-
-function send(message) {
-  console.log(message);
-  writable = pubSocket.write(message)
-}
-
 module.exports = {
   start: start,
-  sub: sub,
-  pub: pub,
-  stop: stop,
-  send: send
+  stop: stop
 }

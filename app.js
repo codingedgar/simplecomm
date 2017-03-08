@@ -6,7 +6,8 @@ var bodyParser = require('body-parser');
 
 //App
 const app = express();
-var rabbitctx = require('./publish');
+// var rabbitctx = require('./publish');
+var rabbitPubSub = require('./pubsub');
 
 // for parsing application/json
 app.use(bodyParser.json());
@@ -30,6 +31,7 @@ function startProject(port) {
   app.listen(port);
   global.port = port;
   console.log('Running on http://localhost:' + port);
+  /*
   if (true) {
     console.log(global.port)
     if (global.port == 8001) {
@@ -39,6 +41,7 @@ function startProject(port) {
       rabbitctx.pub();
     }
   }
+  */
 }
 
 // print process.argv
@@ -81,30 +84,33 @@ app.post('/', function (req, res) {
 
   switch (command) {
     case "start":
-      rabbitctx.start();
+      rabbitPubSub.test.start();
       break;
     case "stop":
-      rabbitctx.stop();
+      rabbitPubSub.test.stop();
       break;
     case "sub":
-      rabbitctx.sub();
+      rabbitPubSub.sub.sub();
+      break;
+    case "subTo":
+      rabbitPubSub.sub.subTo(req.body);
       break;
     case "pub":
-      rabbitctx.pub();
-      break;
-    case "sub to":
-      rabbitctx.sub(req.body.message);
+      rabbitPubSub.pub.pub();
       break;
     case "send":
-      rabbitctx.send(req.body.message);
+      rabbitPubSub.pub.send(req.body.message);
       break;
-    case "send":
+    case "pubTo":
+      rabbitPubSub.pub.pubTo(req.body);
       break;
-    case "send":
+    case "sendTo":
+      rabbitPubSub.pub.sendTo(req.body.channel, req.body.message);
       break;
     default:
       message += "default"
       break;
   }
+  console.log(message);
   res.send(message)
 })
