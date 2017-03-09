@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 const app = express();
 // var rabbitctx = require('./publish');
 var rabbitPubSub = require('./pubsub');
+var rabbitReqRep = require('./reqrep');
+
 
 // for parsing application/json
 app.use(bodyParser.json());
@@ -106,6 +108,12 @@ app.post('/', function (req, res) {
       break;
     case "sendTo":
       rabbitPubSub.pub.sendTo(req.body.channel, req.body.message);
+      break;
+    case "req":
+      rabbitReqRep.req.req();
+      break;
+    case "rep":
+      rabbitReqRep.rep.rep();
       break;
     default:
       message += "default"
